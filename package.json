@@ -1,11 +1,14 @@
 {
-  "name": "@electron/asar",
+  "name": "@lj7788/asarplus",
   "description": "Creating Electron app packages",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "type": "module",
   "exports": "./lib/asar.js",
   "types": "./lib/asar.d.ts",
-  "bin": "./bin/asar.mjs",
+  "bin": {
+    "asar": "./bin/asar.mjs",
+    "asarplus": "./bin/asar.mjs"
+  },
   "files": [
     "bin",
     "lib"
@@ -14,16 +17,16 @@
     "node": ">=22.12.0"
   },
   "license": "MIT",
-  "homepage": "https://github.com/electron/asar",
+  "homepage": "https://github.com/lj7788/asarplus",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron/asar.git"
+    "url": "git+https://github.com/lj7788/asarplus.git"
   },
   "bugs": {
-    "url": "https://github.com/electron/asar/issues"
+    "url": "https://github.com/lj7788/asarplus/issues"
   },
   "publishConfig": {
-    "provenance": true
+    "access": "public"
   },
   "scripts": {
     "build": "tsc",

@@ -1,8 +1,7 @@
-# @electron/asar - Electron Archive
+# @lj7788/asarplus - Electron Archive
 
-[![Test](https://github.com/electron/asar/actions/workflows/test.yml/badge.svg)](https://github.com/electron/asar/actions/workflows/test.yml)
-[![npm version](http://img.shields.io/npm/v/@electron/asar.svg)](https://npmjs.org/package/@electron/asar)
-[![API docs](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.npmjs.org%2F%40electron%2Fasar%2Flatest&query=%24.version&logo=typescript&logoColor=white&label=API%20Docs)](https://packages.electronjs.org/asar)
+[![Test](https://github.com/lj7788/asarplus/actions/workflows/test.yml/badge.svg)](https://github.com/lj7788/asarplus/actions/workflows/test.yml)
+[![npm version](http://img.shields.io/npm/v/@lj7788/asarplus.svg)](https://npmjs.org/package/@lj7788/asarplus)
 
 ASAR is a simple extensive archive format. It concatenates all files together without compression
 (like [`tar`](https://www.gnu.org/software/tar/)) while having random access support.
@@ -21,7 +20,7 @@ ASAR is a simple extensive archive format. It concatenates all files together wi
 This module requires Node 22.12.0 or later.
 
 ```bash
-npm install --engine-strict @electron/asar
+npm install --engine-strict @lj7788/asarplus
 ```
 
 ### Usage
@@ -45,6 +44,9 @@ $ asar --help
     extract|e <archive> <dest>
        extract archive
 
+    replace|r <archive> <filename> <source>
+       replace a file inside archive with contents of source file
+
 
   Options:
 
@@ -52,6 +54,17 @@ $ asar --help
     -V, --version  output the version number
 
 ```
+
+#### Replacing a file inside an archive
+
+```bash
+asar replace app.asar path/inside/archive.js new-file.js
+```
+
+The new contents are appended to the archive and the entry is re-pointed at
+them, so the rest of the archive is left untouched (including entries that
+share contents through deduplication). Old bytes stay as dead space until the
+archive is repacked with `asar pack`.
 
 #### Excluding multiple resources from being packed
 
@@ -89,12 +102,12 @@ asar pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
 
 ## Programmatic usage
 
-For full API usage, see the [API documentation](https://packages.electronjs.org/asar).
+For full API usage, see the [API documentation](https://github.com/lj7788/asarplus).
 
 ### Example
 
 ```javascript
-import { createPackage } from '@electron/asar';
+import { createPackage } from '@lj7788/asarplus';
 
 const src = 'some/path/';
 const dest = 'name.asar';
@@ -124,7 +137,7 @@ nothing, or a `stream.Transform`. The latter will be used on files that will be
 in the `.asar` file to transform them (e.g. compress).
 
 ```javascript
-import { createPackageWithOptions } from '@electron/asar';
+import { createPackageWithOptions } from '@lj7788/asarplus';
 
 const src = 'some/path/';
 const dest = 'name.asar';
