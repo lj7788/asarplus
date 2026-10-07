@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 
 import packageJSON from '../package.json' with { type: 'json' };
-import { createPackageWithOptions, listPackage, extractFile, extractAll } from '../lib/asar.js';
+import {
+  createPackageWithOptions,
+  listPackage,
+  extractFile,
+  extractAll,
+  replaceFile,
+} from '../lib/asar.js';
 import { parseArgs } from 'node:util';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -90,6 +96,17 @@ const commands = {
     action: (positionals) => {
       const [archive, dest] = positionals;
       extractAll(archive, dest);
+    },
+  },
+  replace: {
+    aliases: ['r'],
+    usage: 'replace|r <archive> <filename> <source>',
+    description: 'replace a file inside archive with contents of source file',
+    args: ['archive', 'filename', 'source'],
+    options: {},
+    action: (positionals) => {
+      const [archive, filename, source] = positionals;
+      replaceFile(archive, filename, source);
     },
   },
 };

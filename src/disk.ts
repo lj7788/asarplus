@@ -4,8 +4,12 @@ import { Pickle } from './pickle.js';
 import { Filesystem, FilesystemFileEntry } from './filesystem.js';
 import { CrawledFileType } from './crawlfs.js';
 import { ensureWithin } from './path-validation.js';
+import { getFileIntegrityFromBuffer } from './integrity.js';
 import { Stats } from 'node:fs';
 import stream from 'node:stream/promises';
+
+const UINT32_MAX = 2 ** 32 - 1;
+const COPY_CHUNK_SIZE = 8 * 1024 * 1024;
 
 let filesystemCache: Record<string, Filesystem | undefined> = Object.create(null);
 
@@ -429,6 +433,133 @@ export function readFileWithFd(
     fs.readSync(fd, buffer, 0, info.size, offset);
   }
   return buffer;
+}
+
+function findHeaderEntry(header: unknown, filename: string): Record<string, unknown> {
+  const parts = filename
+    .replace(/^[\\/]+/, '')
+    .split(/[\\/]/)
+    .filter((part) => part.length > 0 && part !== '.');
+  if (parts.length === 0) {
+    throw new Error(`"${filename}" is not a valid path inside the archive`);
+  }
+  let node = header as Record<string, unknown>;
+  for (const part of parts) {
+    const files = node.files as Record<string, unknown> | undefined;
+    if (!files || !files[part]) {
+      throw new Error(`"${filename}" was not found in this archive`);
+    }
+    node = files[part] as Record<string, unknown>;
+  }
+  return node;
+}
+
+/**
+ * Replaces the contents of one file inside an existing archive.
+ *
+ * Packed files get their new bytes appended to the end of the data section and
+ * the entry is re-pointed at them, so every other file's offset stays valid —
+ * including entries that share contents through deduplication. The archive is
+ * rewritten to a temporary file and renamed over the original, because a
+ * changed header length shifts the data section.
+ *
+ * Unpacked files are overwritten in `<archive>.unpacked` and only their
+ * header entry (size/integrity) is updated.
+ *
+ * @param archivePath - path to the .asar archive
+ * @param filename - path of the file inside the archive (leading slash optional)
+ * @param sourcePath - path of the file on disk whose contents are written into the archive
+ */
+export function replaceFile(archivePath: string, filename: string, sourcePath: string): void {
+  const sourceStats = fs.statSync(sourcePath);
+  if (!sourceStats.isFile()) {
+    throw new Error(`"${sourcePath}" is not a file`);
+  }
+  if (sourceStats.size > UINT32_MAX) {
+    throw new Error(`${sourcePath}: file size can not be larger than 4.2GB`);
+  }
+  const content = fs.readFileSync(sourcePath);
+
+  const header = readArchiveHeaderSync(archivePath);
+  const node = findHeaderEntry(header.header, filename);
+  if ('files' in node) {
+    throw new Error(`Expected to find file at: ${filename} but found a directory`);
+  }
+  if ('link' in node) {
+    throw new Error(`Expected to find file at: ${filename} but found a link`);
+  }
+  const isPacked = 'offset' in node;
+  if (!isPacked && node.unpacked !== true) {
+    throw new Error(`"${filename}" is not a file entry in this archive`);
+  }
+
+  if (!isPacked) {
+    const unpackedPath = ensureWithin(`${archivePath}.unpacked`, filename);
+    fs.mkdirpSync(path.dirname(unpackedPath));
+    fs.writeFileSync(unpackedPath, content);
+    if (node.executable === true) {
+      fs.chmodSync(unpackedPath, '755');
+    }
+  }
+
+  const archiveFd = fs.openSync(archivePath, 'r');
+  const tmpPath = `${archivePath}.replace-tmp`;
+  let outFd: number | undefined;
+  let written = false;
+  try {
+    const archiveSize = fs.fstatSync(archiveFd).size;
+    const dataStart = 8 + header.headerSize;
+    const oldDataSize = archiveSize - dataStart;
+    if (oldDataSize < 0) {
+      throw new Error(`Archive "${archivePath}" is corrupted: data section is missing`);
+    }
+
+    if (isPacked) {
+      node.offset = String(oldDataSize);
+    }
+    node.size = content.length;
+    node.integrity = getFileIntegrityFromBuffer(content);
+    validateHeader(header.header);
+
+    const headerPickle = Pickle.createEmpty();
+    headerPickle.writeString(JSON.stringify(header.header));
+    const headerBuf = headerPickle.toBuffer();
+    const sizePickle = Pickle.createEmpty();
+    sizePickle.writeUInt32(headerBuf.length);
+    const sizeBuf = sizePickle.toBuffer();
+
+    outFd = fs.openSync(tmpPath, 'w');
+    fs.writeSync(outFd, sizeBuf);
+    fs.writeSync(outFd, headerBuf);
+
+    const chunk = Buffer.allocUnsafe(Math.min(COPY_CHUNK_SIZE, Math.max(oldDataSize, 1)));
+    let position = dataStart;
+    while (position < archiveSize) {
+      const length = Math.min(chunk.length, archiveSize - position);
+      const bytesRead = fs.readSync(archiveFd, chunk, 0, length, position);
+      if (bytesRead <= 0) {
+        break;
+      }
+      fs.writeSync(outFd, chunk, 0, bytesRead);
+      position += bytesRead;
+    }
+
+    if (isPacked) {
+      fs.writeSync(outFd, content);
+    }
+    written = true;
+  } finally {
+    if (outFd !== undefined) {
+      fs.closeSync(outFd);
+    }
+    fs.closeSync(archiveFd);
+    if (!written) {
+      fs.rmSync(tmpPath, { force: true });
+    }
+  }
+
+  fs.renameSync(tmpPath, archivePath);
+  uncacheFilesystem(archivePath);
 }
 
 async function createFilesystemWriteStream(filesystem: Filesystem, dest: string) {

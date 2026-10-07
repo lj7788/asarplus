@@ -449,4 +449,10 @@ export function extractAll(archivePath: string, dest: string) {
   }
 }
 
-export { uncacheAll, uncacheFilesystem as uncache, FileRecord, DirectoryRecord } from './disk.js';
+export {
+  uncacheAll,
+  uncacheFilesystem as uncache,
+  replaceFile,
+  FileRecord,
+  DirectoryRecord,
+} from './disk.js';
