@@ -3,6 +3,8 @@
 [![Test](https://github.com/lj7788/asarplus/actions/workflows/test.yml/badge.svg)](https://github.com/lj7788/asarplus/actions/workflows/test.yml)
 [![npm version](http://img.shields.io/npm/v/@lj7788/asarplus.svg)](https://npmjs.org/package/@lj7788/asarplus)
 
+English | [简体中文](./README.zh-CN.md)
+
 ASAR is a simple extensive archive format. It concatenates all files together without compression
 (like [`tar`](https://www.gnu.org/software/tar/)) while having random access support.
 
@@ -22,6 +24,8 @@ This module requires Node 22.12.0 or later.
 ```bash
 npm install --engine-strict @lj7788/asarplus
 ```
+
+The package installs two equivalent commands: `asar` and `asarplus`.
 
 ### Usage
 
@@ -55,18 +59,22 @@ $ asar --help
 
 ```
 
-#### Replacing a file inside an archive
+#### Pack
 
 ```bash
-asar replace app.asar path/inside/archive.js new-file.js
+asar pack app app.asar
+
+# leave files matching a glob unpacked (written next to the archive, in app.asar.unpacked/)
+asar pack app app.asar --unpack "*.node"
+
+# exclude hidden files
+asar pack app app.asar --exclude-hidden
+
+# control the order files are stored in (can improve app startup)
+asar pack app app.asar --ordering order.txt
 ```
 
-The new contents are appended to the archive and the entry is re-pointed at
-them, so the rest of the archive is left untouched (including entries that
-share contents through deduplication). Old bytes stay as dead space until the
-archive is repacked with `asar pack`.
-
-#### Excluding multiple resources from being packed
+##### Excluding multiple resources from being packed
 
 Given:
 
@@ -100,9 +108,61 @@ Exclude: a, b, d, f, h
 asar pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
 ```
 
+#### List
+
+```bash
+asar list app.asar
+
+# also show whether each entry is packed or unpacked
+asar list --is-pack app.asar
+```
+
+```text
+pack   : /a.txt
+pack   : /sub
+unpack : /sub/b.bin
+```
+
+#### Extract
+
+```bash
+# extract the whole archive into ./dest
+asar extract app.asar dest
+
+# extract a single file, written to the current directory using its basename
+asar extract-file app.asar path/inside/b.bin   # -> ./b.bin
+```
+
+#### Replacing a file inside an archive
+
+```bash
+asar replace app.asar path/inside/archive.js new-file.js
+```
+
+The new contents are appended to the archive and the entry is re-pointed at
+them, so the rest of the archive is left untouched (including entries that
+share contents through deduplication). Old bytes stay as dead space until the
+archive is repacked with `asar pack`.
+
 ## Programmatic usage
 
 For full API usage, see the [API documentation](https://github.com/lj7788/asarplus).
+
+| Function | Description |
+| --- | --- |
+| `createPackage(src, dest)` | Pack directory `src` into archive `dest` |
+| `createPackageWithOptions(src, dest, options)` | Pack with `unpack`, `unpackDir`, `ordering`, `pattern`, `transform`, `dot` / `globOptions` options |
+| `createPackageFromFiles(src, dest, filenames, metadata?)` | Pack an explicit list of files |
+| `createPackageFromStreams(dest, streams)` | Pack from stream descriptors (`AsarStreamType`) |
+| `listPackage(archive, options)` | List entries; `{ isPack: true }` also marks each as packed/unpacked |
+| `statFile(archive, filename, followLinks?)` | Stat one entry |
+| `extractFile(archive, filename, followLinks?)` | Read one entry as a `Buffer` |
+| `extractAll(archive, dest)` | Extract all entries into `dest` |
+| `replaceFile(archive, filename, source)` | Replace one entry in place |
+| `getRawHeader(archive)` | Read the raw header |
+| `uncache(archive)` / `uncacheAll()` | Drop cached archive state |
+
+`createPackage*` are async, the rest are synchronous.
 
 ### Example
 
@@ -117,6 +177,26 @@ console.log('done.');
 ```
 
 Please note that there is currently **no** error handling provided!
+
+### Replace a file
+
+```javascript
+import { replaceFile } from '@lj7788/asarplus';
+
+replaceFile('app.asar', 'path/inside/archive.js', 'new-file.js');
+```
+
+The new contents are appended to the end of the data section and the entry is
+re-pointed at them, so every other entry keeps its offset — including entries
+that share contents through deduplication. Old bytes stay as dead space until
+the archive is repacked with `createPackage`.
+
+Entries that were unpacked to disk are overwritten in place under
+`app.asar.unpacked` instead.
+
+Throws if `filename` does not exist, refers to a directory, or `source` cannot
+be read. The archive is rewritten through a temporary file and renamed, so it
+never leaves a half-written archive behind.
 
 ### Deduplication
 
