@@ -6,8 +6,8 @@
   "exports": "./lib/asar.js",
   "types": "./lib/asar.d.ts",
   "bin": {
-    "asar": "./bin/asar.mjs",
-    "asarplus": "./bin/asar.mjs"
+    "asar": "bin/asar.mjs",
+    "asarplus": "bin/asar.mjs"
   },
   "files": [
     "bin",
