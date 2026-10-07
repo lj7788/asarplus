@@ -72,7 +72,7 @@
     }
   },
   "lint-staged": {
-    "*.{json,md}": "oxfmt --write",
+    "*.json": "oxfmt --write",
     "*.{js,ts,cjs,mjs,cts,mts}": [
       "oxlint --fix",
       "oxfmt --write"
