@@ -2,6 +2,16 @@
   "name": "asarpro",
   "description": "Creating Electron app packages",
   "version": "1.0.0",
+  "author": "lj7788@126.com",
+  "maintainers": [
+    "lj7788@126.com"
+  ],
+  "keywords": [
+    "asar",
+    "electron",
+    "package",
+    "create"
+  ],
   "type": "module",
   "exports": "./lib/asar.js",
   "types": "./lib/asar.d.ts",
