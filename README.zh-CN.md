@@ -22,7 +22,7 @@ ASAR 是一种简单紧凑的归档格式。它把所有文件无压缩地拼接
 需要 Node.js 22.12.0 或更高版本。
 
 ```bash
-npm install --engine-strict @lj7788/asarplus
+npm i -g @lj7788/asarplus
 ```
 
 安装后提供 `asarplus` 命令。

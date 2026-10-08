@@ -22,7 +22,7 @@ ASAR is a simple extensive archive format. It concatenates all files together wi
 This module requires Node 22.12.0 or later.
 
 ```bash
-npm install --engine-strict @lj7788/asarplus
+npm i -g @lj7788/asarplus
 ```
 
 The package installs the `asarplus` command.
