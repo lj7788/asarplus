@@ -1,7 +1,7 @@
-# @lj7788/asarplus - Electron Archive
+# asarplus - Electron Archive
 
 [![Test](https://github.com/lj7788/asarplus/actions/workflows/test.yml/badge.svg)](https://github.com/lj7788/asarplus/actions/workflows/test.yml)
-[![npm version](http://img.shields.io/npm/v/@lj7788/asarplus.svg)](https://npmjs.org/package/@lj7788/asarplus)
+[![npm version](http://img.shields.io/npm/v/asarplus.svg)](https://npmjs.org/package/asarplus)
 
 English | [简体中文](./README.zh-CN.md)
 
@@ -22,7 +22,7 @@ ASAR is a simple extensive archive format. It concatenates all files together wi
 This module requires Node 22.12.0 or later.
 
 ```bash
-npm i -g @lj7788/asarplus
+npm i -g asarplus
 ```
 
 The package installs the `asarplus` command.
@@ -167,7 +167,7 @@ For full API usage, see the [API documentation](https://github.com/lj7788/asarpl
 ### Example
 
 ```javascript
-import { createPackage } from '@lj7788/asarplus';
+import { createPackage } from 'asarplus';
 
 const src = 'some/path/';
 const dest = 'name.asar';
@@ -181,7 +181,7 @@ Please note that there is currently **no** error handling provided!
 ### Replace a file
 
 ```javascript
-import { replaceFile } from '@lj7788/asarplus';
+import { replaceFile } from 'asarplus';
 
 replaceFile('app.asar', 'path/inside/archive.js', 'new-file.js');
 ```
@@ -217,7 +217,7 @@ nothing, or a `stream.Transform`. The latter will be used on files that will be
 in the `.asar` file to transform them (e.g. compress).
 
 ```javascript
-import { createPackageWithOptions } from '@lj7788/asarplus';
+import { createPackageWithOptions } from 'asarplus';
 
 const src = 'some/path/';
 const dest = 'name.asar';

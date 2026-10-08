@@ -1,7 +1,7 @@
-# @lj7788/asarplus — Electron 归档工具
+# asarplus — Electron 归档工具
 
 [![Test](https://github.com/lj7788/asarplus/actions/workflows/test.yml/badge.svg)](https://github.com/lj7788/asarplus/actions/workflows/test.yml)
-[![npm version](http://img.shields.io/npm/v/@lj7788/asarplus.svg)](https://npmjs.org/package/@lj7788/asarplus)
+[![npm version](http://img.shields.io/npm/v/asarplus.svg)](https://npmjs.org/package/asarplus)
 
 [English](./README.md) | 简体中文
 
@@ -22,7 +22,7 @@ ASAR 是一种简单紧凑的归档格式。它把所有文件无压缩地拼接
 需要 Node.js 22.12.0 或更高版本。
 
 ```bash
-npm i -g @lj7788/asarplus
+npm i -g asarplus
 ```
 
 安装后提供 `asarplus` 命令。
@@ -166,7 +166,7 @@ asarplus replace app.asar path/inside/archive.js new-file.js
 ### 示例
 
 ```javascript
-import { createPackage } from '@lj7788/asarplus';
+import { createPackage } from 'asarplus';
 
 const src = 'some/path/';
 const dest = 'name.asar';
@@ -180,7 +180,7 @@ console.log('done.');
 ### 替换归档内的文件
 
 ```javascript
-import { replaceFile } from '@lj7788/asarplus';
+import { replaceFile } from 'asarplus';
 
 replaceFile('app.asar', 'path/inside/archive.js', 'new-file.js');
 ```
@@ -210,7 +210,7 @@ replaceFile('app.asar', 'path/inside/archive.js', 'new-file.js');
 后者会用于处理将要进入 `.asar` 文件的文件（例如压缩）。
 
 ```javascript
-import { createPackageWithOptions } from '@lj7788/asarplus';
+import { createPackageWithOptions } from 'asarplus';
 
 const src = 'some/path/';
 const dest = 'name.asar';

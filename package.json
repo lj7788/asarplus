@@ -1,13 +1,11 @@
 {
-  "name": "@lj7788/asarplus",
+  "name": "asarplus",
   "description": "Creating Electron app packages",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "exports": "./lib/asar.js",
   "types": "./lib/asar.d.ts",
-  "bin": {
-    "asarplus": "bin/asarplus.mjs"
-  },
+  "bin": "bin/asarplus.mjs",
   "files": [
     "bin",
     "lib"
