@@ -308,8 +308,7 @@ __metadata:
     electron:
       built: true
   bin:
-    asar: ./bin/asar.mjs
-    asarplus: ./bin/asar.mjs
+    asarplus: bin/asarplus.mjs
   languageName: unknown
   linkType: soft
 

@@ -25,14 +25,14 @@ ASAR 是一种简单紧凑的归档格式。它把所有文件无压缩地拼接
 npm install --engine-strict @lj7788/asarplus
 ```
 
-安装后会提供两个等价命令：`asar` 和 `asarplus`。
+安装后提供 `asarplus` 命令。
 
 ### 用法
 
 ```bash
-$ asar --help
+$ asarplus --help
 
-  Usage: asar [options] [command]
+  Usage: asarplus [options] [command]
 
   Commands:
 
@@ -62,16 +62,16 @@ $ asar --help
 #### 打包（pack）
 
 ```bash
-asar pack app app.asar
+asarplus pack app app.asar
 
 # 匹配 glob 的文件不打包进归档，而是放在归档旁边的 app.asar.unpacked/ 目录下
-asar pack app app.asar --unpack "*.node"
+asarplus pack app app.asar --unpack "*.node"
 
 # 排除隐藏文件
-asar pack app app.asar --exclude-hidden
+asarplus pack app app.asar --exclude-hidden
 
 # 控制文件在归档中的存放顺序（某些场景下可加快应用启动）
-asar pack app app.asar --ordering order.txt
+asarplus pack app app.asar --ordering order.txt
 ```
 
 ##### 排除多个资源不打包
@@ -93,28 +93,28 @@ asar pack app app.asar --ordering order.txt
 排除：a、b
 
 ```bash
-asar pack app app.asar --unpack-dir "{x1,x2}"
+asarplus pack app app.asar --unpack-dir "{x1,x2}"
 ```
 
 排除：a、b、d、f
 
 ```bash
-asar pack app app.asar --unpack-dir "**/{x1,x2}"
+asarplus pack app app.asar --unpack-dir "**/{x1,x2}"
 ```
 
 排除：a、b、d、f、h
 
 ```bash
-asar pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
+asarplus pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
 ```
 
 #### 列出文件（list）
 
 ```bash
-asar list app.asar
+asarplus list app.asar
 
 # 同时显示每个条目是打包（pack）还是未打包（unpack）
-asar list --is-pack app.asar
+asarplus list --is-pack app.asar
 ```
 
 ```text
@@ -127,21 +127,21 @@ unpack : /sub/b.bin
 
 ```bash
 # 把整个归档解包到 ./dest 目录
-asar extract app.asar dest
+asarplus extract app.asar dest
 
 # 只解出单个文件，写入当前目录，文件名取路径的最后一段
-asar extract-file app.asar path/inside/b.bin   # -> ./b.bin
+asarplus extract-file app.asar path/inside/b.bin   # -> ./b.bin
 ```
 
 #### 替换归档内的文件（replace）
 
 ```bash
-asar replace app.asar path/inside/archive.js new-file.js
+asarplus replace app.asar path/inside/archive.js new-file.js
 ```
 
 新内容会追加到归档数据段的末尾，并把对应条目重新指向新位置，因此归档的
 其余部分完全不受影响（包括因去重而共享内容的条目）。旧字节会残留为空洞，
-直到用 `asar pack` 重新打包归档。
+直到用 `asarplus pack` 重新打包归档。
 
 ## 编程方式使用
 

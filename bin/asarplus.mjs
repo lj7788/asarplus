@@ -25,7 +25,7 @@ if (
   (actualNodeVersion[0] === requiredNodeVersion[0] && actualNodeVersion[1] < requiredNodeVersion[1])
 ) {
   console.error('CANNOT RUN WITH NODE ' + process.versions.node);
-  console.error('asar requires Node ' + packageJSON.engines.node + '.');
+  console.error('asarplus requires Node ' + packageJSON.engines.node + '.');
   process.exit(1);
 }
 
@@ -112,7 +112,7 @@ const commands = {
 };
 
 function printHelp() {
-  console.log('Usage: asar [options] [command]');
+  console.log('Usage: asarplus [options] [command]');
   console.log();
   console.log('Manipulate asar archive files');
   console.log();
@@ -128,7 +128,7 @@ function printHelp() {
 }
 
 function printCommandHelp(cmd) {
-  console.log(`Usage: asar ${cmd.usage}`);
+  console.log(`Usage: asarplus ${cmd.usage}`);
   console.log();
   console.log(cmd.description);
   console.log();
@@ -163,7 +163,7 @@ if (!command) {
 }
 
 if (!command) {
-  console.log("asar: '%s' is not an asar command. See 'asar --help'.", commandName);
+  console.log("asarplus: '%s' is not an asarplus command. See 'asarplus --help'.", commandName);
   process.exit(1);
 }
 

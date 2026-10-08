@@ -25,14 +25,14 @@ This module requires Node 22.12.0 or later.
 npm install --engine-strict @lj7788/asarplus
 ```
 
-The package installs two equivalent commands: `asar` and `asarplus`.
+The package installs the `asarplus` command.
 
 ### Usage
 
 ```bash
-$ asar --help
+$ asarplus --help
 
-  Usage: asar [options] [command]
+  Usage: asarplus [options] [command]
 
   Commands:
 
@@ -62,16 +62,16 @@ $ asar --help
 #### Pack
 
 ```bash
-asar pack app app.asar
+asarplus pack app app.asar
 
 # leave files matching a glob unpacked (written next to the archive, in app.asar.unpacked/)
-asar pack app app.asar --unpack "*.node"
+asarplus pack app app.asar --unpack "*.node"
 
 # exclude hidden files
-asar pack app app.asar --exclude-hidden
+asarplus pack app app.asar --exclude-hidden
 
 # control the order files are stored in (can improve app startup)
-asar pack app app.asar --ordering order.txt
+asarplus pack app app.asar --ordering order.txt
 ```
 
 ##### Excluding multiple resources from being packed
@@ -93,28 +93,28 @@ Given:
 Exclude: a, b
 
 ```bash
-asar pack app app.asar --unpack-dir "{x1,x2}"
+asarplus pack app app.asar --unpack-dir "{x1,x2}"
 ```
 
 Exclude: a, b, d, f
 
 ```bash
-asar pack app app.asar --unpack-dir "**/{x1,x2}"
+asarplus pack app app.asar --unpack-dir "**/{x1,x2}"
 ```
 
 Exclude: a, b, d, f, h
 
 ```bash
-asar pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
+asarplus pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
 ```
 
 #### List
 
 ```bash
-asar list app.asar
+asarplus list app.asar
 
 # also show whether each entry is packed or unpacked
-asar list --is-pack app.asar
+asarplus list --is-pack app.asar
 ```
 
 ```text
@@ -127,22 +127,22 @@ unpack : /sub/b.bin
 
 ```bash
 # extract the whole archive into ./dest
-asar extract app.asar dest
+asarplus extract app.asar dest
 
 # extract a single file, written to the current directory using its basename
-asar extract-file app.asar path/inside/b.bin   # -> ./b.bin
+asarplus extract-file app.asar path/inside/b.bin   # -> ./b.bin
 ```
 
 #### Replacing a file inside an archive
 
 ```bash
-asar replace app.asar path/inside/archive.js new-file.js
+asarplus replace app.asar path/inside/archive.js new-file.js
 ```
 
 The new contents are appended to the archive and the entry is re-pointed at
 them, so the rest of the archive is left untouched (including entries that
 share contents through deduplication). Old bytes stay as dead space until the
-archive is repacked with `asar pack`.
+archive is repacked with `asarplus pack`.
 
 ## Programmatic usage
 
