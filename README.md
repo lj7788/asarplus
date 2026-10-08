@@ -1,7 +1,7 @@
-# asarplus - Electron Archive
+# asarpro - Electron Archive
 
-[![Test](https://github.com/lj7788/asarplus/actions/workflows/test.yml/badge.svg)](https://github.com/lj7788/asarplus/actions/workflows/test.yml)
-[![npm version](http://img.shields.io/npm/v/asarplus.svg)](https://npmjs.org/package/asarplus)
+[![Test](https://github.com/lj7788/asarpro/actions/workflows/test.yml/badge.svg)](https://github.com/lj7788/asarpro/actions/workflows/test.yml)
+[![npm version](http://img.shields.io/npm/v/asarpro.svg)](https://npmjs.org/package/asarpro)
 
 English | [简体中文](./README.zh-CN.md)
 
@@ -22,17 +22,17 @@ ASAR is a simple extensive archive format. It concatenates all files together wi
 This module requires Node 22.12.0 or later.
 
 ```bash
-npm i -g asarplus
+npm i -g asarpro
 ```
 
-The package installs the `asarplus` command.
+The package installs the `asarpro` command.
 
 ### Usage
 
 ```bash
-$ asarplus --help
+$ asarpro --help
 
-  Usage: asarplus [options] [command]
+  Usage: asarpro [options] [command]
 
   Commands:
 
@@ -62,16 +62,16 @@ $ asarplus --help
 #### Pack
 
 ```bash
-asarplus pack app app.asar
+asarpro pack app app.asar
 
 # leave files matching a glob unpacked (written next to the archive, in app.asar.unpacked/)
-asarplus pack app app.asar --unpack "*.node"
+asarpro pack app app.asar --unpack "*.node"
 
 # exclude hidden files
-asarplus pack app app.asar --exclude-hidden
+asarpro pack app app.asar --exclude-hidden
 
 # control the order files are stored in (can improve app startup)
-asarplus pack app app.asar --ordering order.txt
+asarpro pack app app.asar --ordering order.txt
 ```
 
 ##### Excluding multiple resources from being packed
@@ -93,28 +93,28 @@ Given:
 Exclude: a, b
 
 ```bash
-asarplus pack app app.asar --unpack-dir "{x1,x2}"
+asarpro pack app app.asar --unpack-dir "{x1,x2}"
 ```
 
 Exclude: a, b, d, f
 
 ```bash
-asarplus pack app app.asar --unpack-dir "**/{x1,x2}"
+asarpro pack app app.asar --unpack-dir "**/{x1,x2}"
 ```
 
 Exclude: a, b, d, f, h
 
 ```bash
-asarplus pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
+asarpro pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
 ```
 
 #### List
 
 ```bash
-asarplus list app.asar
+asarpro list app.asar
 
 # also show whether each entry is packed or unpacked
-asarplus list --is-pack app.asar
+asarpro list --is-pack app.asar
 ```
 
 ```text
@@ -127,26 +127,26 @@ unpack : /sub/b.bin
 
 ```bash
 # extract the whole archive into ./dest
-asarplus extract app.asar dest
+asarpro extract app.asar dest
 
 # extract a single file, written to the current directory using its basename
-asarplus extract-file app.asar path/inside/b.bin   # -> ./b.bin
+asarpro extract-file app.asar path/inside/b.bin   # -> ./b.bin
 ```
 
 #### Replacing a file inside an archive
 
 ```bash
-asarplus replace app.asar path/inside/archive.js new-file.js
+asarpro replace app.asar path/inside/archive.js new-file.js
 ```
 
 The new contents are appended to the archive and the entry is re-pointed at
 them, so the rest of the archive is left untouched (including entries that
 share contents through deduplication). Old bytes stay as dead space until the
-archive is repacked with `asarplus pack`.
+archive is repacked with `asarpro pack`.
 
 ## Programmatic usage
 
-For full API usage, see the [API documentation](https://github.com/lj7788/asarplus).
+For full API usage, see the [API documentation](https://github.com/lj7788/asarpro).
 
 | Function | Description |
 | --- | --- |
@@ -167,7 +167,7 @@ For full API usage, see the [API documentation](https://github.com/lj7788/asarpl
 ### Example
 
 ```javascript
-import { createPackage } from 'asarplus';
+import { createPackage } from 'asarpro';
 
 const src = 'some/path/';
 const dest = 'name.asar';
@@ -181,7 +181,7 @@ Please note that there is currently **no** error handling provided!
 ### Replace a file
 
 ```javascript
-import { replaceFile } from 'asarplus';
+import { replaceFile } from 'asarpro';
 
 replaceFile('app.asar', 'path/inside/archive.js', 'new-file.js');
 ```
@@ -217,7 +217,7 @@ nothing, or a `stream.Transform`. The latter will be used on files that will be
 in the `.asar` file to transform them (e.g. compress).
 
 ```javascript
-import { createPackageWithOptions } from 'asarplus';
+import { createPackageWithOptions } from 'asarpro';
 
 const src = 'some/path/';
 const dest = 'name.asar';

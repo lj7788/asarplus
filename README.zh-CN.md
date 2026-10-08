@@ -1,7 +1,7 @@
-# asarplus — Electron 归档工具
+# asarpro — Electron 归档工具
 
-[![Test](https://github.com/lj7788/asarplus/actions/workflows/test.yml/badge.svg)](https://github.com/lj7788/asarplus/actions/workflows/test.yml)
-[![npm version](http://img.shields.io/npm/v/asarplus.svg)](https://npmjs.org/package/asarplus)
+[![Test](https://github.com/lj7788/asarpro/actions/workflows/test.yml/badge.svg)](https://github.com/lj7788/asarpro/actions/workflows/test.yml)
+[![npm version](http://img.shields.io/npm/v/asarpro.svg)](https://npmjs.org/package/asarpro)
 
 [English](./README.md) | 简体中文
 
@@ -22,17 +22,17 @@ ASAR 是一种简单紧凑的归档格式。它把所有文件无压缩地拼接
 需要 Node.js 22.12.0 或更高版本。
 
 ```bash
-npm i -g asarplus
+npm i -g asarpro
 ```
 
-安装后提供 `asarplus` 命令。
+安装后提供 `asarpro` 命令。
 
 ### 用法
 
 ```bash
-$ asarplus --help
+$ asarpro --help
 
-  Usage: asarplus [options] [command]
+  Usage: asarpro [options] [command]
 
   Commands:
 
@@ -62,16 +62,16 @@ $ asarplus --help
 #### 打包（pack）
 
 ```bash
-asarplus pack app app.asar
+asarpro pack app app.asar
 
 # 匹配 glob 的文件不打包进归档，而是放在归档旁边的 app.asar.unpacked/ 目录下
-asarplus pack app app.asar --unpack "*.node"
+asarpro pack app app.asar --unpack "*.node"
 
 # 排除隐藏文件
-asarplus pack app app.asar --exclude-hidden
+asarpro pack app app.asar --exclude-hidden
 
 # 控制文件在归档中的存放顺序（某些场景下可加快应用启动）
-asarplus pack app app.asar --ordering order.txt
+asarpro pack app app.asar --ordering order.txt
 ```
 
 ##### 排除多个资源不打包
@@ -93,28 +93,28 @@ asarplus pack app app.asar --ordering order.txt
 排除：a、b
 
 ```bash
-asarplus pack app app.asar --unpack-dir "{x1,x2}"
+asarpro pack app app.asar --unpack-dir "{x1,x2}"
 ```
 
 排除：a、b、d、f
 
 ```bash
-asarplus pack app app.asar --unpack-dir "**/{x1,x2}"
+asarpro pack app app.asar --unpack-dir "**/{x1,x2}"
 ```
 
 排除：a、b、d、f、h
 
 ```bash
-asarplus pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
+asarpro pack app app.asar --unpack-dir "{**/x1,**/x2,z4/w1}"
 ```
 
 #### 列出文件（list）
 
 ```bash
-asarplus list app.asar
+asarpro list app.asar
 
 # 同时显示每个条目是打包（pack）还是未打包（unpack）
-asarplus list --is-pack app.asar
+asarpro list --is-pack app.asar
 ```
 
 ```text
@@ -127,25 +127,25 @@ unpack : /sub/b.bin
 
 ```bash
 # 把整个归档解包到 ./dest 目录
-asarplus extract app.asar dest
+asarpro extract app.asar dest
 
 # 只解出单个文件，写入当前目录，文件名取路径的最后一段
-asarplus extract-file app.asar path/inside/b.bin   # -> ./b.bin
+asarpro extract-file app.asar path/inside/b.bin   # -> ./b.bin
 ```
 
 #### 替换归档内的文件（replace）
 
 ```bash
-asarplus replace app.asar path/inside/archive.js new-file.js
+asarpro replace app.asar path/inside/archive.js new-file.js
 ```
 
 新内容会追加到归档数据段的末尾，并把对应条目重新指向新位置，因此归档的
 其余部分完全不受影响（包括因去重而共享内容的条目）。旧字节会残留为空洞，
-直到用 `asarplus pack` 重新打包归档。
+直到用 `asarpro pack` 重新打包归档。
 
 ## 编程方式使用
 
-完整 API 说明见 [API 文档](https://github.com/lj7788/asarplus)。
+完整 API 说明见 [API 文档](https://github.com/lj7788/asarpro)。
 
 | 函数 | 说明 |
 | --- | --- |
@@ -166,7 +166,7 @@ asarplus replace app.asar path/inside/archive.js new-file.js
 ### 示例
 
 ```javascript
-import { createPackage } from 'asarplus';
+import { createPackage } from 'asarpro';
 
 const src = 'some/path/';
 const dest = 'name.asar';
@@ -180,7 +180,7 @@ console.log('done.');
 ### 替换归档内的文件
 
 ```javascript
-import { replaceFile } from 'asarplus';
+import { replaceFile } from 'asarpro';
 
 replaceFile('app.asar', 'path/inside/archive.js', 'new-file.js');
 ```
@@ -210,7 +210,7 @@ replaceFile('app.asar', 'path/inside/archive.js', 'new-file.js');
 后者会用于处理将要进入 `.asar` 文件的文件（例如压缩）。
 
 ```javascript
-import { createPackageWithOptions } from 'asarplus';
+import { createPackageWithOptions } from 'asarpro';
 
 const src = 'some/path/';
 const dest = 'name.asar';
